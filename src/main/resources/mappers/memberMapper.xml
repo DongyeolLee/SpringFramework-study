@@ -10,4 +10,12 @@
     <insert id="insertMember">
         INSERT INTO  tbl_member (userid, userpw, username, email) VALUES (#{userid}, #{userpw}, #{username}, #{email})
     </insert>
+
+    <select id="selectMember" resultType="com.dy.board.domains.MemberVO">
+        SELECT * FROM  tbl_member WHERE userid = #{userid}
+    </select>
+
+    <select id="readWithPW" resultType="com.dy.board.domains.MemberVO">
+        SELECT * FROM tbl_member WHERE userid = #{userid} and userpw = #{userpw}
+    </select>
 </mapper>

@@ -25,11 +25,28 @@ public class MemberDAOTest {
     public void testInsertMember() throws Exception {
 
         MemberVO vo = new MemberVO();
+
         vo.setUserid("user00");
         vo.setUserpw("00");
         vo.setUsername("USER00");
         vo.setEmail("user00@test.com");
 
         dao.insertMember(vo);
+    }
+
+    @Test
+    public void testReadMember() throws Exception {
+
+       MemberVO member = dao.readMember("user00");
+
+       System.out.println(member);
+    }
+
+    @Test
+    public void testReadMemberWithPW() throws Exception {
+
+        MemberVO member = dao.readWithPW("user00", "00");
+
+        System.out.println(member);
     }
 }
