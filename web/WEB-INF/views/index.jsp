@@ -3,7 +3,7 @@
 
 <%@include file="include/header.jsp"%>
 
-<link rel="stylesheet" href="../../webapp/resources/bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" href="/resources/bootstrap/css/bootstrap.min.css">
   <!-- Main content -->
   <section class="content">
     <div class="row">
