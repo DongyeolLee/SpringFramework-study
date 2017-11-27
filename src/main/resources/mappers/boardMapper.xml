@@ -36,4 +36,10 @@
           SELECT bno, title, content, writer, regdate, viewcnt FROM tbl_board where bno > 0 order BY bno desc, regdate DESC limit #{pageStart}, #{perPageNum}
         ]]>
     </select>
+
+    <select id="countPaging" resultType="int">
+         <![CDATA[
+          SELECT COUNT(bno) FROM tbl_board where bno > 0
+        ]]>
+    </select>
 </mapper>

@@ -7,6 +7,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -78,5 +80,18 @@ public class BoardDAOTest {
         for (BoardVO boardVO : list) {
             System.out.println(boardVO.getBno() + ":" + boardVO.getTitle());
         }
+    }
+
+    @Test
+    public void testURI() throws Exception {
+
+        UriComponents uriComponents = UriComponentsBuilder.newInstance()
+                .path("/board/read")
+                .queryParam("bno", 12)
+                .queryParam("perPageNum", 20).build();
+
+        System.out.println("*******************************");
+        System.out.println("/board/read?bno=12&perPageNum=20");
+        System.out.println(uriComponents.toString());
     }
 }
