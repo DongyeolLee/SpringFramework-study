@@ -88,12 +88,7 @@
     <!-- /.row -->
 </section>
 <!-- /.content -->
-
-<%--<form id="jobForm">--%>
-    <%--<input type='hidden' name="page" value=${pageMaker.cri.perPageNum}>--%>
-    <%--<input type='hidden' name="perPageNum" value=${pageMaker.cri.perPageNum}>--%>
-<%--</form>--%>
-
+</div>
 
 <script>
     var result = '${msg}';
@@ -101,22 +96,6 @@
     if (result == 'success') {
         alert("처리가 완료되었습니다.");
     }
-
-//    $(".pagination li a").on("click", function (event) {
-//
-//        console.log("**********************************");
-//
-//        event.preventDefault();
-//
-//        var targetPage = $(this).attr("href");
-//
-//        console.log(targetPage);
-//        var jobForm = $("#jobForm");
-//        jobForm.find("[name='page']").val(targetPage);
-//        jobForm.attr("action", "/board/listPage").attr("method", "get");
-//        console.log(jobForm);
-//        jobForm.submit();
-//    });
 
 </script>
 
