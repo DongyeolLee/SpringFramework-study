@@ -1,6 +1,7 @@
 package com.dy.board.services;
 
 import com.dy.board.domains.BoardVO;
+import com.dy.board.domains.Criteria;
 import com.dy.board.persistences.BoardDAO;
 import org.springframework.stereotype.Service;
 
@@ -36,5 +37,10 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public List<BoardVO> listAll() throws Exception {
         return dao.listAll();
+    }
+
+    @Override
+    public List<BoardVO> listCriteria(Criteria cri) throws Exception {
+        return dao.listCriteria(cri);
     }
 }

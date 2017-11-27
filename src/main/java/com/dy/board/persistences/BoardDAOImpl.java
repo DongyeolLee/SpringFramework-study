@@ -1,6 +1,7 @@
 package com.dy.board.persistences;
 
 import com.dy.board.domains.BoardVO;
+import com.dy.board.domains.Criteria;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
 
@@ -38,5 +39,22 @@ public class BoardDAOImpl implements BoardDAO {
     @Override
     public List<BoardVO> listAll() throws Exception {
         return session.selectList(namespace+".listAll");
+    }
+
+    @Override
+    public List<BoardVO> listPage(int page) throws Exception {
+        if (page <= 0) {
+            page = 1;
+        }
+
+        page = (page - 1) * 10;
+
+        return session.selectList(namespace + ".listPage", page);
+    }
+
+    @Override
+    public List<BoardVO> listCriteria(Criteria cri) throws Exception {
+
+        return session.selectList(namespace + ".listCriteria", cri);
     }
 }

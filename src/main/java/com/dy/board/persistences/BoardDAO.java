@@ -1,6 +1,7 @@
 package com.dy.board.persistences;
 
 import com.dy.board.domains.BoardVO;
+import com.dy.board.domains.Criteria;
 
 import java.util.List;
 
@@ -14,4 +15,8 @@ public interface BoardDAO {
     public void delete(Integer bno) throws Exception;
 
     public List<BoardVO> listAll() throws Exception;
+
+    public List<BoardVO> listPage(int page) throws Exception;
+
+    public List<BoardVO> listCriteria(Criteria cri) throws Exception;
 }
