@@ -2,6 +2,7 @@ package com.dy.board.persistences;
 
 import com.dy.board.domains.BoardVO;
 import com.dy.board.domains.Criteria;
+import com.dy.board.domains.SearchCriteria;
 
 import java.util.List;
 
@@ -21,4 +22,8 @@ public interface BoardDAO {
     public List<BoardVO> listCriteria(Criteria cri) throws Exception;
 
     public int countPaging(Criteria cri) throws Exception;
+
+    public List<BoardVO> listSearch(SearchCriteria cri) throws Exception;
+
+    public int listSearchCount(SearchCriteria cri) throws Exception;
 }

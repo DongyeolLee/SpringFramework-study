@@ -2,6 +2,7 @@ package com.dy.board.services;
 
 import com.dy.board.domains.BoardVO;
 import com.dy.board.domains.Criteria;
+import com.dy.board.domains.SearchCriteria;
 
 import java.util.List;
 
@@ -19,4 +20,8 @@ public interface BoardService {
     public List<BoardVO> listCriteria(Criteria cri) throws Exception;
 
     public int listCountCriteria(Criteria cri) throws Exception;
+
+    public List<BoardVO> listSearchCriteria(SearchCriteria cri) throws Exception;
+
+    public int listSearchCount(SearchCriteria cri) throws Exception;
 }

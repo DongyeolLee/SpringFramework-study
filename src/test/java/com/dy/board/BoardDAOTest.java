@@ -2,6 +2,7 @@ package com.dy.board;
 
 import com.dy.board.domains.BoardVO;
 import com.dy.board.domains.Criteria;
+import com.dy.board.domains.SearchCriteria;
 import com.dy.board.persistences.BoardDAO;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -93,5 +94,25 @@ public class BoardDAOTest {
         System.out.println("*******************************");
         System.out.println("/board/read?bno=12&perPageNum=20");
         System.out.println(uriComponents.toString());
+    }
+
+    @Test
+    public void dynamic1() throws Exception {
+
+        SearchCriteria cri = new SearchCriteria();
+        cri.setPage(1);
+        cri.setKeyword("444");
+        cri.setSearchType("t");
+
+        System.out.println("*********************");
+
+        List<BoardVO> list = dao.listSearch(cri);
+
+        for(BoardVO boardVO : list) {
+            System.out.println(boardVO.getBno() + ": " + boardVO.getTitle());
+        }
+
+        System.out.println("*********************");
+        System.out.println("COUNT : " + dao.listSearchCount(cri));
     }
 }
