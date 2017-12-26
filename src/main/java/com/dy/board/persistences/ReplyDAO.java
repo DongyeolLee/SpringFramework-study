@@ -1,5 +1,6 @@
 package com.dy.board.persistences;
 
+import com.dy.board.domains.Criteria;
 import com.dy.board.domains.ReplyVO;
 
 import java.util.List;
@@ -13,4 +14,8 @@ public interface ReplyDAO {
     public void update(ReplyVO vo) throws Exception;
 
     public void delete(Integer rno) throws Exception;
+
+    public List<ReplyVO> listPage(Integer bno, Criteria cri) throws Exception;
+
+    public int count(Integer bno) throws Exception;
 }
