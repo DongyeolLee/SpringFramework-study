@@ -45,7 +45,7 @@ public class ReplyController {
 
     @RequestMapping(value = "/all/{bno}", method = RequestMethod.GET)
     public ResponseEntity<List<ReplyVO>> list(@PathVariable("bno") Integer bno) {
-
+        logger.info("------------------------------------ in Con");
         ResponseEntity<List<ReplyVO>> entity = null;
 
         try {
