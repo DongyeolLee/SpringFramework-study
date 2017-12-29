@@ -47,7 +47,61 @@
                     <button type="submit" class="btn btn-primary">GO LIST </button>
                 </div>
 
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="box box-success">
+                            <div class="box-header">
+                                <h3 class="box-title">ADD NEW REPLY</h3>
+                            </div>
+                            <div class="box-body">
+                                <label for="exampleInputEmail1">Writer</label>
+                                <input class="form-control" type="text" placeholder="USER ID" id="newReplyWriter">
+                                <label for="exampleInputEmail1">Reply</label>
+                                <input class="form-control" type="text" placeholder="REPLY TEXT" id="newReplyText">
+                            </div>
+                            <div class="box-footer">
+                                <button class="btn btn-default" id="replyAddBtn">ADD REPLY</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <ul class="timeline">
+                    <li class="time-label" id="repliesDiv">
+                        <span class="bg-green">Replies List</span>
+                    </li>
+                </ul>
+
+                <div class="text-center">
+                    <ul id="pagination" class="pagination pagination-sm no-margin">
+
+                    </ul>
+                </div>
+
+                <div id="modifyModal" class="modal modal-primary fade" role="dialog">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times</button>
+                                <h4 class="modal-title"></h4>
+                            </div>
+                            <div class="modal-body" data-rno>
+                                <p>
+                                    <input type="text" id="replytext" class="form-control"/>
+                                </p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-info" id="replyModBtn">modify</button>
+                                <button type="button" class="btn btn-success" id="replyDelBtn">delete</button>
+                                <button type="button" class="btn btn-default" data-dismiss="modal">close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <script>
+                    var bno = ${boardVO.bno};
+                    var replyPage = 1;
+
                     $(document).ready(function(){
 
                         var formObj = $("form[role='form']");
@@ -71,8 +125,176 @@
                             formObj.attr("action", "/sboard/list");
                             formObj.submit();
                         });
-
                     });
+
+                    function printPaging(pageMaker, target) {
+                        var str = "";
+                        if(pageMaker.prev) {
+                            str += "<li><a href='"+(pageMaker.startPage-1)+"'> << </a></li>";
+                        }
+
+                        for(var i = pageMaker.startPage, len = pageMaker.endPage; i <= len; i ++) {
+                            var strClass = pageMaker.cri.page == i? ' class=active':'';
+                            str += "<li"+strClass+"><a href='"+ i +"'>"+i+"</a><li>";
+                        }
+
+                        if(pageMaker.next) {
+                            str += "<li><a href='"+(pageMaker.startPage+1)+"'> >> </a></li>";
+                        }
+                        target.html(str);
+                    }
+                    function getPage(pageInfo) {
+                        console.log(pageInfo);
+                        $.getJSON(pageInfo, function (data) {
+                            console.log("^^^^^^^^^^^^^^^^^^^^^^^^^");
+                            console.log(data);
+                            printData(data.list, $("#repliesDiv"), $("#template"));
+                            printPaging(data.pageMaker, $(".pagination"));
+                        })
+                    }
+
+                    Handlebars.registerHelper("prettifyDate", function (timeValue) {
+                        console.log(timeValue);
+                        var dateObj = new Date(timeValue);
+                        console.log(dateObj);
+                        var year = dateObj.getYear();
+                        var month = dateObj.getMonth();
+                        var date = dateObj.getDate();
+                        console.log(year);
+                        return -100+year+"/"+month+"/"+date;
+                    });
+
+                    var printData = function (replyArr, target, templateObject) {
+                        var template = Handlebars.compile(templateObject.html());
+                        var html = template(replyArr);
+                        $(".replyLi").remove();
+                        target.after(html);
+                    };
+
+                    $("#repliesDiv").on("click", function () {
+                        if($(".timeline li").size() > 1) {
+                            return;
+                        }
+                        getPage("/replies/"+bno+"/1");
+                    });
+
+                    $(".pagination").on("click","li a", function (event) {
+                        event.preventDefault();
+                        console.log($(this).attr("href"));
+                        replyPage = $(this).attr("href");
+                        getPage("/replies/"+bno+"/"+replyPage);
+                    });
+
+                    $("#replyAddBtn").on("click", function () {
+                        var bno = ${boardVO.bno};
+                        var replyPage = 1;
+
+                        var replyerObj = $("#newReplyWriter");
+                        var replytextObj = $("#newReplyText");
+                        var replyer = replyerObj.val();
+                        var replytext = replytextObj.val();
+
+                        console.log("=------------------");
+                        $.ajax({
+                            type: 'post',
+                            url: '/replies/',
+                            headers: {
+                                "Content-Type" : "application/json",
+                                "X-HTTP-Method-Override" : "POST"
+                            },
+                            dataType:'text',
+                            data: JSON.stringify({
+                                bno:bno,
+                                replyer: replyer,
+                                replytext: replytext
+                            }),
+                            success: function (result) {
+                                console.log(result);
+                                if(result == "SUCCESS") {
+                                    alert("success");
+                                    replyPage = 1;
+
+                                    getPage("/replies/" + bno+ "/"+replyPage);
+
+                                    replyerObj.val("");
+                                    replytextObj.val("");
+                                }
+                            }
+                        })
+                    });
+
+                    $(".timeline").on("click", ".replyLi", function (event) {
+                        var reply = $(this);
+
+                        console.log("&&&&&&&&&&&&&&&&&&&&");
+
+                        $("#replytext").val(reply.find('.timeline-body').text());
+                        $(".modal-title").html(reply.attr("data-rno"));
+                    });
+
+                    $("#replyModBtn").on("click", function () {
+                        var rno = $(".modal-title").html();
+                        var replytext = $("#replytext").val();
+                        console.log(rno);
+                        console.log(replytext);
+                        $.ajax({
+                            type: 'put',
+                            url: '/replies/' + rno,
+                            headers: {
+                                "Content-Type": "application/json",
+                                "X-HTTP-Method-Overide": "PUT"
+                            },
+                            data: JSON.stringify({replytext: replytext}),
+                            dataType: 'text',
+                            success: function (result) {
+                                console.log(result);
+                                if(result=='SUCCESS') {
+                                    alert("modified");
+                                    getPage("/replies/"+bno+"/"+replyPage);
+                                }
+                            }
+                        })
+                    });
+
+                    $("#replyDelBtn").on("click", function () {
+                        var rno = $(".modal-title").html();
+                        var replytext = $("#replytext").val();
+                        console.log(rno);
+                        console.log(replytext);
+                        $.ajax({
+                            type: 'delete',
+                            url: '/replies/' + rno,
+                            headers: {
+                                "Content-Type": "application/json",
+                                "X-HTTP-Method-Overide": "DELETE"
+                            },
+                            dataType: 'text',
+                            success: function (result) {
+                                console.log(result);
+                                if(result=='SUCCESS') {
+                                    alert("delete");
+                                    getPage("/replies/"+bno+"/"+replyPage);
+                                }
+                            }
+                        })
+                    })
+                </script>
+                <script id="template" type="text/x-handlebars-template">
+                    {{#each .}}
+                        <li class="replyLi" data-rno="{{rno}}">
+                            <i class="fa fa-comments bg-blue"></i>
+                            <div class="timeline-item">
+                                <span class="time">
+                                    <i class="fa fa-clock-o"></i>{{prettifyDate regdate}}
+                                </span>
+                                <h3 class="timeline-header"><strong>{{rno}}</strong> -{{replyer}}</h3>
+                                <div class="timeline-body">{{replytext}}</div>
+                                <div class="timeline-footer">
+                                    <a class="btn btn-primary btn-xs" data-toggle="modal" data-target="#modifyModal">Modify</a>
+                                </div>
+                            </div>
+                        </li>
+                    {{/each}}
                 </script>
             </div><!-- /.box -->
         </div><!--/.col (left) -->

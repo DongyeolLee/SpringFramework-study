@@ -24,4 +24,11 @@ public class BasicController {
         logger.info("home controller");
         logger.info("*********************************************");
     }
+
+    @RequestMapping(value = "/handlebarsTest", method = RequestMethod.GET)
+    public void handlebars() {
+        logger.info("*********************************************");
+        logger.info("home controller -> handlebars");
+        logger.info("*********************************************");
+    }
 }
