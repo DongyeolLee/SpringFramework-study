@@ -26,4 +26,8 @@
     <select id="count" resultType="int">
         select count(bno) from tbl_reply where bno = #{bno}
     </select>
+
+    <select id="getBno" resultType="int">
+        SELECT bno FROM tbl_reply WHERE rno = #{rno}
+    </select>
 </mapper>

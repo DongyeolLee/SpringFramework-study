@@ -8,7 +8,7 @@
     </insert>
 
     <select id="read" resultType="com.dy.board.domains.BoardVO">
-        SELECT bno, title, content, writer, regdate, viewcnt FROM tbl_board WHERE bno = #{bno}
+        SELECT bno, title, content, writer, regdate, viewcnt, replycnt FROM tbl_board WHERE bno = #{bno}
     </select>
 
     <update id="update">
@@ -33,7 +33,7 @@
 
      <select id="listCriteria" resultType="BoardVO">
         <![CDATA[
-          SELECT bno, title, content, writer, regdate, viewcnt FROM tbl_board where bno > 0 order BY bno desc, regdate DESC limit #{pageStart}, #{perPageNum}
+          SELECT bno, title, content, writer, regdate, viewcnt, replycnt FROM tbl_board where bno > 0 order BY bno desc, regdate DESC limit #{pageStart}, #{perPageNum}
         ]]>
     </select>
 
@@ -90,4 +90,8 @@
         <include refid="search"></include>
 
     </select>
+
+    <update id="updateReplyCnt">
+        UPDATE tbl_board SET replycnt = replycnt + #{amount} WHERE bno = #{bno}
+    </update>
 </mapper>

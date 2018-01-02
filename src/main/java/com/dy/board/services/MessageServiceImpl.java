@@ -6,6 +6,7 @@ import com.dy.board.persistences.PointDAO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 
@@ -19,6 +20,7 @@ public class MessageServiceImpl implements MessageService {
 
     private static final Logger logger = LoggerFactory.getLogger(MessageServiceImpl.class);
 
+    @Transactional
     @Override
     public void addMessage(MessageVO vo) throws Exception {
         logger.info("start serviceImpl");
