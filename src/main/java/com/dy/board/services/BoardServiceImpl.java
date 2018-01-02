@@ -4,7 +4,11 @@ import com.dy.board.domains.BoardVO;
 import com.dy.board.domains.Criteria;
 import com.dy.board.domains.SearchCriteria;
 import com.dy.board.persistences.BoardDAO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -14,14 +18,19 @@ public class BoardServiceImpl implements BoardService {
 
     @Inject
     private BoardDAO dao;
+    private static final Logger logger = LoggerFactory.getLogger(BoardServiceImpl.class);
 
     @Override
     public void regist(BoardVO board) throws Exception {
         dao.create(board);
     }
 
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     @Override
-    public BoardVO read(Integer bno) throws Exception {
+    public BoardVO read(Integer bno, Integer bit) throws Exception {
+        if(bit == 1)
+            dao.updateViewCnt(bno);
+
         return dao.read(bno);
     }
 
