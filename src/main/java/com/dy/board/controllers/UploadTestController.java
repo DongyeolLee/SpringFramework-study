@@ -1,5 +1,6 @@
 package com.dy.board.controllers;
 
+import com.dy.board.util.UploadFileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -61,6 +62,6 @@ public class UploadTestController {
         logger.info("size:" + file.getSize());
         logger.info("contentType:" + file.getContentType());
 
-        return new ResponseEntity<>(file.getOriginalFilename(), HttpStatus.CREATED);
+        return new ResponseEntity<>(UploadFileUtils.uploadFile(uploadPath, file.getOriginalFilename(), file.getBytes()), HttpStatus.CREATED);
     }
 }
