@@ -98,4 +98,8 @@
     <update id="updateViewCnt">
         UPDATE tbl_board SET viewcnt = viewcnt + 1 WHERE bno = #{bno}
     </update>
+
+    <insert id="addAttach">
+        INSERT INTO tbl_attach(fullname, bno) VALUES (#{fullName}, LAST_INSERT_ID())
+    </insert>
 </mapper>

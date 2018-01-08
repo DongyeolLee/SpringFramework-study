@@ -107,4 +107,26 @@ public class UploadTestController {
 
         return entity;
     }
+
+    @ResponseBody
+    @RequestMapping(value = "/deleteFile", method = RequestMethod.POST)
+    public ResponseEntity<String> deleteFile(String fileName) {
+
+        String formatName = fileName.substring(fileName.lastIndexOf(".") + 1);
+        MediaType mType = MimeMediaUtil.getMediaType(formatName);
+
+        logger.info("delete file : " + fileName);
+
+        if(mType != null) {
+
+            String front = fileName.substring(0, 12);
+            String end = fileName.substring(14);
+
+            new File(uploadPath + (front + end).replace('/', File.separatorChar)).delete();
+        }
+
+        new File(uploadPath + fileName.replace('/', File.separatorChar)).delete();
+
+        return new ResponseEntity<String>("deleted", HttpStatus.OK);
+    }
 }

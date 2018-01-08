@@ -20,9 +20,19 @@ public class BoardServiceImpl implements BoardService {
     private BoardDAO dao;
     private static final Logger logger = LoggerFactory.getLogger(BoardServiceImpl.class);
 
+    @Transactional
     @Override
     public void regist(BoardVO board) throws Exception {
         dao.create(board);
+        String[] files = board.getFiles();
+
+        if(files == null) {
+            return;
+        }
+
+        for(String fileName : files) {
+            dao.addAttach(fileName);
+        }
     }
 
     @Transactional(isolation = Isolation.READ_COMMITTED)
