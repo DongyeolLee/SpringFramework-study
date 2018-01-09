@@ -2,6 +2,10 @@
          pageEncoding="UTF-8"%>
 
 <%@include file="../include/header.jsp" %>
+<div class="popup back" style="display: none"></div>
+<div id="popup_front" class="popup front" style="display: none">
+    <img id="popup_img"/>
+</div>
 
 <!-- Main content -->
 <section class="content">
@@ -42,6 +46,13 @@
                 </div><!-- /.box-body -->
 
                 <div class="box-footer">
+                    <div>
+                        <hr>
+                    </div>
+
+                    <ul class="mailbox-attachments clearfix uploadedList">
+                    </ul>
+
                     <button type="submit" class="btn btn-warning">Modify</button>
                     <button type="submit" class="btn btn-danger">REMOVE</button>
                     <button type="submit" class="btn btn-primary">GO LIST </button>
@@ -98,11 +109,14 @@
                         </div>
                     </div>
                 </div>
+
                 <script>
                     var bno = ${boardVO.bno};
                     var replyPage = 1;
 
                     $(document).ready(function(){
+                        var bno = ${boardVO.bno};
+                        var template = Handlebars.compile($("#templateAttach").html());
 
                         var formObj = $("form[role='form']");
 
@@ -124,6 +138,21 @@
                             formObj.attr("method", "get");
                             formObj.attr("action", "/sboard/list");
                             formObj.submit();
+                        });
+
+                        $.getJSON("/sboard/getAttach/" + bno, function (list) {
+                            console.log("in");
+                            console.log(list);
+                            $(list).each(function () {
+                                console.log("each");
+                                console.log(template);
+
+                                var fileInfo = getFileInfo(this);
+                                console.log(fileInfo);
+                                var html = template(fileInfo);
+
+                                $(".uploadedList").append(html);
+                            })
                         });
                     });
 
@@ -280,6 +309,29 @@
                                 }
                             }
                         })
+                    });
+
+                    $(".uploadedList").on("click", ".mailbox-attachment-info a", function (event) {
+
+                        console.log("click image file a tag");
+                        var fileLink = $(this).attr("href");
+                        console.log(fileLink);
+                        if(checkImageType(fileLink)) {
+                            event.preventDefault();
+
+                            var imgTag = $("#popup_img");
+                            imgTag.attr("src", fileLink);
+
+                            console.log(imgTag.attr("src"));
+
+                            $(".popup").show('slow');
+                            imgTag.addClass("show");
+                            console.log("finish");
+                        }
+                    });
+
+                    $("#popup_img").on("click", function () {
+                        $(".popup").hide('slow');
                     })
                 </script>
                 <script id="template" type="text/x-handlebars-template">
@@ -299,11 +351,46 @@
                         </li>
                     {{/each}}
                 </script>
+                <script id="templateAttach" type="text/x-handlebars-template">
+                    <li data-src="{{fullName}}">
+                        <span class="mailbox-attachment-icon has-img">
+                            <img src="{{imgsrc}}" alt="Attachment"/>
+                        </span>
+                        <div class="mailbox-attachment-info">
+                            <a href="{{getLink}}" class="mailbox-attachment-name">{{fileName}}</a>
+                        </div>
+                    </li>
+                </script>
             </div><!-- /.box -->
         </div><!--/.col (left) -->
 
     </div>   <!-- /.row -->
 </section><!-- /.content -->
 </div><!-- /.content-wrapper -->
-
+<script type="application/javascript" src="/resources/upload.js"></script>
+<style type="text/css">
+    .popup {
+        position: absolute;
+    }
+    .back {
+        background-color: grey;
+        opacity: 0.5;
+        width: 100%;
+        height: 300%;
+        overflow: hidden;
+        z-index: 1101;
+    }
+    .front {
+        z-index: 1110;
+        opacity: 1;
+        border: 1px;
+        margin: auto;
+    }
+    .show {
+        position: relative;
+        max-width: 1200px;
+        max-height: 800px;
+        overflow: auto;
+    }
+</style>
 <%@include file="../include/footer.jsp" %>

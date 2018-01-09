@@ -92,10 +92,14 @@
         event.preventDefault();
         console.log("*******drop");
         var files = event.originalEvent.dataTransfer.files;
+        console.log(event);
+        console.log(files)
         var file = files[0];
         console.log(file);
         var formData = new FormData();
+        console.log(formData);
         formData.append("file", file);
+        console.log(formData.has("file"));
         console.log("******* sending");
         $.ajax({
             url: '/uploadAjax',

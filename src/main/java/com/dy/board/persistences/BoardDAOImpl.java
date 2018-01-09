@@ -19,6 +19,7 @@ public class BoardDAOImpl implements BoardDAO {
 
     private static final String namespace = "com.dy.board.mapper.BoardMapper";
 
+
     @Override
     public void create(BoardVO vo) throws Exception {
         session.insert(namespace+".create", vo);
@@ -95,5 +96,11 @@ public class BoardDAOImpl implements BoardDAO {
     @Override
     public void addAttach(String fullName) throws Exception {
         session.insert(namespace + ".addAttach", fullName);
+    }
+
+    @Override
+    public List<String> getAttach(Integer bno) throws Exception {
+
+        return session.selectList(namespace + ".getAttach", bno);
     }
 }

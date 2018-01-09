@@ -93,6 +93,7 @@ public class UploadTestController {
                 fileName = fileName.substring(fileName.indexOf("_") + 1);
                 headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
                 headers.add("Content_Disposition", "attachment; filename=\"" + new String(fileName.getBytes("UTF-8"), "ISO-8859-1") + "\"");
+                logger.info(headers.toString());
             }
 
             entity = new ResponseEntity<byte[]>(IOUtils.toByteArray(in), headers, HttpStatus.CREATED);
