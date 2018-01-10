@@ -73,7 +73,7 @@
 <script id="template" type="text/x-handlebars-template">
     <li>
         <span class="mailbox-attachment-icon has-img"><img src="{{imgsrc}}" alt="Attachment"></span>
-        <div class="mailbox-attachment-info">
+        <div class="mailbox-attachment-info" data-src={{fullName}}>
             <a href="{{getLink}}" class="mailbox-attachment-name">{{fileName}}</a>
             <a href="{{fullName}}" class="btn btn-default btn-xs pull-right delbtn"><i class="fa fa-fw fa-remove"></i> </a>
         </div>
@@ -127,7 +127,27 @@
         });
         that.append(str);
         that.get(0).submit();
-    })
+    });
+
+    $(".uploadedList").on("click", ".mailbox-attachment-info a", function (event) {
+        event.preventDefault();
+        var that = $(this);
+        console.log("delete");
+        $.ajax({
+            url: "/deleteFile",
+            type: "post",
+            data: {fileName: $(this).parent().attr("data-src")},
+            dataType: "text",
+            success: function (result) {
+                if(result == 'deleted') {
+                    console.log(that.parent("div"));
+                    console.log(that.parent().parent("li"));
+//                    that.parent().parent("div").remove();
+                    that.parent().parent("li").remove();
+                }
+            }
+        });
+    });
 </script>
 <script type="application/javascript" src="/resources/upload.js"></script>
 <%@include file="../include/footer.jsp"%>

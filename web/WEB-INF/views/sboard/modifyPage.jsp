@@ -2,6 +2,13 @@
          pageEncoding="UTF-8"%>
 
 <%@include file="../include/header.jsp"%>
+<style>
+    .fileDrop {
+        width: 100%;
+        height: 200px;
+        border: 1px dotted blue;
+    }
+</style>
 
 <!-- Main content -->
 <section class="content">
@@ -15,7 +22,7 @@
                 </div>
                 <!-- /.box-header -->
 
-                <form role="form" action="modifyPage" method="post">
+                <form id="registerForm" role="form" action="modifyPage" method="post">
 
                     <input type='hidden' name='page' value="${cri.page}">
                     <input type='hidden' name='perPageNum' value="${cri.perPageNum}">
@@ -43,10 +50,22 @@
                                 type="text" name="writer" class="form-control"
                                 value="${boardVO.writer}">
                         </div>
+
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">File DROP Here</label>
+                            <div class="fileDrop"></div>
+                        </div>
                     </div>
                     <!-- /.box-body -->
                 </form>
                 <div class="box-footer">
+                    <div>
+                        <hr>
+                    </div>
+
+                    <ul class="mailbox-attachments clearfix uploadedList">
+                    </ul>
+
                     <button type="submit" class="btn btn-primary">SAVE</button>
                     <button type="submit" class="btn btn-warning">CANCEL</button>
                 </div>
@@ -55,23 +74,84 @@
                     $(document)
                         .ready(
                             function() {
-
+                                var template = Handlebars.compile($("#template").html());
                                 var formObj = $("form[role='form']");
 
                                 console.log(formObj);
 
-                                $(".btn-warning")
-                                    .on(
-                                        "click",
-                                        function() {
+                                $(".btn-warning").on("click", function() {
                                             self.location = "/sboard/list?page=${cri.page}&perPageNum=${cri.perPageNum}"+"&searchType=${cri.searchType}&keyword=${cri.keyword}";
                                         });
 
-                                $(".btn-primary").on("click",
-                                    function() {
+                                $(".btn-primary").on("click", function() {
                                         formObj.submit();
                                     });
 
+                                $(".fileDrop").on("dragenter dragover", function (event) {
+                                    console.log("***** not yet");
+                                    event.preventDefault();
+                                });
+
+                                $(".fileDrop").on("drop", function (event) {
+                                    event.preventDefault();
+                                    console.log("*******drop");
+                                    var files = event.originalEvent.dataTransfer.files;
+                                    console.log(event);
+                                    console.log(files)
+                                    var file = files[0];
+                                    console.log(file);
+                                    var formData = new FormData();
+                                    console.log(formData);
+                                    formData.append("file", file);
+                                    console.log(formData.has("file"));
+                                    console.log("******* sending");
+                                    $.ajax({
+                                        url: '/uploadAjax',
+                                        data: formData,
+                                        dataType: 'text',
+                                        processData: false,
+                                        contentType: false,
+                                        type: 'POST',
+                                        success: function (data) {
+                                            var fileInfo = getFileInfo(data);
+                                            var html = template(fileInfo);
+
+                                            $(".uploadedList").append(html);
+                                        }
+                                    })
+                                });
+
+                                $("#registerForm").submit(function (event) {
+                                    event.preventDefault();
+                                    var that = $(this);
+                                    var str = "";
+
+                                    $(".uploadedList .delbtn").each(function (index) {
+                                        str += "<input type='hidden' name='files[" + index + "]' value='" + $(this).attr("href") + "'>";
+                                    });
+                                    that.append(str);
+                                    that.get(0).submit();
+                                });
+
+                                $(".uploadedList").on("click", ".mailbox-attachment-info a", function (event) {
+                                    event.preventDefault();
+                                    var that = $(this);
+                                    console.log("delete");
+                                    $.ajax({
+                                        url: "/deleteFile",
+                                        type: "post",
+                                        data: {fileName: $(this).parent().attr("data-src")},
+                                        dataType: "text",
+                                        success: function (result) {
+                                            if(result == 'deleted') {
+                                                console.log(that.parent("div"));
+                                                console.log(that.parent().parent("li"));
+//                                              that.parent().parent("div").remove();
+                                                that.parent().parent("li").remove();
+                                            }
+                                        }
+                                    });
+                                });
                             });
                 </script>
             </div>
@@ -85,4 +165,14 @@
 </div>
 <!-- /.content-wrapper -->
 
+<script id="template" type="text/x-handlebars-template">
+    <li>
+        <span class="mailbox-attachment-icon has-img"><img src="{{imgsrc}}" alt="Attachment"></span>
+        <div class="mailbox-attachment-info" data-src={{fullName}}>
+            <a href="{{getLink}}" class="mailbox-attachment-name">{{fileName}}</a>
+            <a href="{{fullName}}" class="btn btn-default btn-xs pull-right delbtn"><i class="fa fa-fw fa-remove"></i> </a>
+        </div>
+    </li>
+</script>
+<script type="application/javascript" src="/resources/upload.js"></script>
 <%@include file="../include/footer.jsp"%>

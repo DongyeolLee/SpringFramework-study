@@ -12,7 +12,7 @@
     </select>
 
     <update id="update">
-        UPDATE tbl_board set title = #{title}, content = #{content} WHERE bno = #{bno}
+        UPDATE tbl_board set title = #{title}, content = #{content}, writer = #{writer} WHERE bno = #{bno}
     </update>
 
     <delete id="delete">
@@ -106,4 +106,12 @@
     <select id="getAttach" resultType="string">
         SELECT fullname FROM tbl_attach WHERE bno = #{bno} ORDER BY regdate
     </select>
+
+    <delete id="deleteAttach">
+        DELETE from tbl_attach WHERE bno=#{bno}
+    </delete>
+
+    <update id="replaceAttach">
+        INSERT INTO tbl_attach(fullname, bno) VALUES (#{fullName}, #{bno})
+    </update>
 </mapper>

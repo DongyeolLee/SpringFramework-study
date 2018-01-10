@@ -134,6 +134,8 @@ public class SearchBoardController {
     @RequestMapping(value = "/modifyPage", method = RequestMethod.POST)
     public String modifyPagingPOST(BoardVO board, SearchCriteria cri, RedirectAttributes rttr) throws Exception {
 
+        logger.info("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
+        logger.info(board.toString());
         service.modify(board);
 
         rttr.addAttribute("page", cri.getPage());

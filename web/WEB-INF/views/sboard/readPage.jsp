@@ -130,6 +130,25 @@
                         });
 
                         $(".btn-danger").on("click", function(){
+                            var replyCnt = $("#replycntSmall").html();
+
+                            if(replyCnt > 0) {
+                                alert("댓글이 달린 게시물은 삭제할 수 없습니다.");
+                                return;
+                            }
+
+                            var arr = [];
+
+                            $(".uploadedList li").each(function (index) {
+                                arr.push($(this).attr("data-src"));
+                            });
+
+                            if(arr.length > 0) {
+                                $.post("/deleteAllFiles", {files: arr}, function () {
+
+                                })
+                            }
+
                             formObj.attr("action", "/sboard/removePage");
                             formObj.submit();
                         });
