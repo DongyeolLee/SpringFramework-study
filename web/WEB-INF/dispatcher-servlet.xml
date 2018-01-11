@@ -3,6 +3,7 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:beans="http://www.springframework.org/schema/beans"
+       xmlns:bean="http://www.springframework.org/schema/c"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
         http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd">
@@ -24,4 +25,27 @@
         <beans:constructor-arg value="/Users/DY/IntellijProjects/board/img"/>
     </beans:bean>
 
+    <beans:bean id="loginInterceptor" class="com.dy.board.interceptor.LoginInterceptor"/>
+    <beans:bean id="sampleInterceptor" class="com.dy.board.interceptor.SampleInterceptor"/>
+    <beans:bean id="authInterceptor" class="com.dy.board.interceptor.AuthInterceptor"/>
+
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/user/loginPost"/>
+            <beans:ref bean="loginInterceptor"/>
+        </mvc:interceptor>
+
+        <mvc:interceptor>
+            <mvc:mapping path="/sboard/register"/>
+            <beans:ref bean="authInterceptor"/>
+        </mvc:interceptor>
+    </mvc:interceptors>
+
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/doA"/>
+            <mvc:mapping path="/doB"/>
+            <beans:ref bean="sampleInterceptor"/>
+        </mvc:interceptor>
+    </mvc:interceptors>
 </beans>
