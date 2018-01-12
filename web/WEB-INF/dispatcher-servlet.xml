@@ -37,6 +37,8 @@
 
         <mvc:interceptor>
             <mvc:mapping path="/sboard/register"/>
+            <mvc:mapping path="/sboard/modifyPage"/>
+            <mvc:mapping path="/sboard/removePage"/>
             <beans:ref bean="authInterceptor"/>
         </mvc:interceptor>
     </mvc:interceptors>
