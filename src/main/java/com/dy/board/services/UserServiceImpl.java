@@ -6,6 +6,7 @@ import com.dy.board.persistences.UserDAO;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
+import java.util.Date;
 
 @Service
 public class UserServiceImpl implements UserService{
@@ -16,5 +17,15 @@ public class UserServiceImpl implements UserService{
     @Override
     public UserVO login(LoginDTO dto) throws Exception {
         return dao.login(dto);
+    }
+
+    @Override
+    public void keepLogin(String uid, String sessionId, Date next) {
+        dao.keepLogin(uid, sessionId, next);
+    }
+
+    @Override
+    public UserVO checkLoginBefore(String value) {
+        return dao.checkUserWithSessionKey(value);
     }
 }
